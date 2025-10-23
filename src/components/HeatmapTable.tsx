@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatCurrency, formatMonthKey } from '@/lib/format'
-import { MONTHS_PT } from '@/lib/constants'
 
 type Props = {
   data: Record<string, Record<string, number>>

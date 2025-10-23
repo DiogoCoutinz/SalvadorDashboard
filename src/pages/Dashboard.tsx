@@ -3,14 +3,13 @@ import { useSearchParams } from 'react-router-dom'
 import { getResumo } from '@/lib/queries'
 import { getMensalOptimized, getTopVendedoresOptimized, getTopClientesOptimized, getHeatmapFamiliaMesOptimized } from '@/lib/queriesOptimized'
 import { getClientesUnicos, getTicketMedio, getConcentracaoVendas } from '@/lib/kpisAdicionais'
-import { type Filters } from '@/lib/supabase'
+import { type Filters as FilterType } from '@/lib/supabase'
 import KpiCard from '@/components/KpiCard'
 import MonthTrend from '@/components/MonthTrend'
 import BarCompare from '@/components/BarCompare'
 import HeatmapTable from '@/components/HeatmapTable'
 import DataTable from '@/components/DataTable'
 import Filters from '@/components/Filters'
-import EmptyState from '@/components/EmptyState'
 import LoadingState from '@/components/LoadingState'
 
 export default function Dashboard() {
@@ -23,12 +22,12 @@ export default function Dashboard() {
   const [heatmap, setHeatmap] = useState<Record<string, Record<string, number>>>({})
   const [kpisAdicionais, setKpisAdicionais] = useState({
     clientesUnicos: { clientesAtivosAc: 0, clientesAtivosAa: 0, crescimentoClientes: null as number | null },
-    ticketMedio: { ticketMedioAc: 0, ticketMedioAa: 0 },
+    ticketMedio: { ticketMedioAc: 0, ticketMedioAa: 0, crescimentoTicket: null as number | null },
     concentracao: { concentracaoTop20: 0, totalClientes: 0 }
   })
 
   useEffect(() => {
-    const filters: Filters = {
+    const filters: FilterType = {
       vendedores: searchParams.get('vendedores')?.split(',').filter(Boolean),
       familias: searchParams.get('familias')?.split(',').filter(Boolean),
       tipo: searchParams.get('tipo') || undefined,
@@ -59,7 +58,11 @@ export default function Dashboard() {
       
       setKpisAdicionais({
         clientesUnicos: clientes,
-        ticketMedio: { ...ticket, crescimentoTicket },
+        ticketMedio: { 
+          ticketMedioAc: ticket.ticketMedioAc,
+          ticketMedioAa: ticket.ticketMedioAa,
+          crescimentoTicket
+        },
         concentracao: concentracao
       })
       setLoading(false)

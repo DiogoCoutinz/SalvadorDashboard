@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { getTopClientes } from '@/lib/queries'
-import { type Filters } from '@/lib/supabase'
+import { type Filters as FilterType } from '@/lib/supabase'
 import Filters from '@/components/Filters'
 import DataTable from '@/components/DataTable'
 import LoadingState from '@/components/LoadingState'
@@ -13,7 +13,7 @@ export default function Clientes() {
   const [clientes, setClientes] = useState<any[]>([])
 
   useEffect(() => {
-    const filters: Filters = {
+    const filters: FilterType = {
       vendedores: searchParams.get('vendedores')?.split(',').filter(Boolean),
       familias: searchParams.get('familias')?.split(',').filter(Boolean),
       tipo: searchParams.get('tipo') || undefined,
@@ -55,7 +55,6 @@ export default function Clientes() {
         }))}
         columns={[
           { key: 'cliente', label: 'Cliente' },
-          { key: 'vendedor', label: 'Vendedor' },
           { key: 'acum_ac', label: 'Vendas YTD', format: 'currency' },
           { key: 'acum_aa', label: 'Ano Anterior', format: 'currency' },
           { key: 'crescimento', label: 'Crescimento (%)', format: 'percent' },

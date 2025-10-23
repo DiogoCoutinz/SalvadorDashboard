@@ -57,7 +57,7 @@ export const getClientesUnicos = async (filters: Filters = {}) => {
 /**
  * Ticket médio por cliente ativo
  */
-export const getTicketMedio = async (filters: Filters = {}) => {
+export const getTicketMedio = async (_filters: Filters = {}) => {
   if (!supabase) {
     throw new Error('Supabase não configurado')
   }
@@ -98,7 +98,7 @@ export const getTicketMedio = async (filters: Filters = {}) => {
 /**
  * Concentração de vendas - Pareto 80/20
  */
-export const getConcentracaoVendas = async (filters: Filters = {}) => {
+export const getConcentracaoVendas = async (_filters: Filters = {}) => {
   if (!supabase) {
     throw new Error('Supabase não configurado')
   }
@@ -145,7 +145,7 @@ export const getConcentracaoVendas = async (filters: Filters = {}) => {
 /**
  * Performance por tipo de cliente
  */
-export const getPerformancePorTipo = async (filters: Filters = {}) => {
+export const getPerformancePorTipo = async (_filters: Filters = {}) => {
   if (!supabase) {
     throw new Error('Supabase não configurado')
   }

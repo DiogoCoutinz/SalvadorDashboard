@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { getTopVendedores } from '@/lib/queries'
-import { type Filters } from '@/lib/supabase'
+import { type Filters as FilterType } from '@/lib/supabase'
 import Filters from '@/components/Filters'
 import DataTable from '@/components/DataTable'
 import LoadingState from '@/components/LoadingState'
@@ -13,7 +13,7 @@ export default function Vendedores() {
   const [vendedores, setVendedores] = useState<any[]>([])
 
   useEffect(() => {
-    const filters: Filters = {
+    const filters: FilterType = {
       familias: searchParams.get('familias')?.split(',').filter(Boolean),
       tipo: searchParams.get('tipo') || undefined,
     }
