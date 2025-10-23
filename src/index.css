@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-gray-200 font-sans antialiased;
+  }
+
+  * {
+    @apply border-dark-border;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-dark-card border border-dark-border rounded-2xl p-4 transition-all duration-200;
+  }
+
+  .card:hover {
+    @apply border-gray-700 shadow-lg;
+  }
+
+  .btn {
+    @apply bg-primary text-white px-4 py-2 rounded-lg border-none cursor-pointer transition-all duration-200 text-sm font-medium;
+  }
+
+  .btn:hover {
+    @apply bg-blue-600;
+  }
+
+  .btn:disabled {
+    @apply bg-gray-700 cursor-not-allowed opacity-50;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-dark-card via-gray-800 to-dark-card bg-[length:200%_100%];
+    animation: loading 1.5s ease-in-out infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .table-wrapper {
+    @apply overflow-x-auto;
+  }
+
+  table {
+    @apply w-full border-collapse;
+  }
+
+  th {
+    @apply sticky top-0 bg-dark-card px-3 py-3 text-left font-semibold border-b-2 border-gray-700 cursor-pointer select-none text-sm;
+  }
+
+  th:hover {
+    @apply bg-dark-hover;
+  }
+
+  td {
+    @apply px-3 py-3 border-b border-dark-border text-sm;
+  }
+
+  tr:hover {
+    @apply bg-dark-hover;
+  }
+
+  select,
+  input[type="text"],
+  input[type="date"] {
+    @apply bg-dark-card border border-gray-700 text-gray-200 px-3 py-2 rounded-lg text-sm;
+  }
+
+  select:focus,
+  input[type="text"]:focus,
+  input[type="date"]:focus {
+    @apply outline-none border-primary;
+  }
+}
+
