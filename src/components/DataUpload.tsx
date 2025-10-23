@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { Upload, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { Upload, AlertCircle, CheckCircle, Loader2, X } from 'lucide-react'
 import { processVendasFile } from '@/lib/dataProcessor'
 import { deleteAllData, insertNewData } from '@/lib/queries'
 
@@ -69,27 +70,45 @@ export default function DataUpload() {
     setProgress('')
   }
 
-  return (
-    <>
-      {/* Botão para abrir modal */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="btn flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-        title="Atualizar dados do Supabase"
-      >
-        <Upload className="w-4 h-4" />
-        <span className="hidden sm:inline">Atualizar Dados</span>
-      </button>
+  // Bloquear scroll quando modal está aberto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
 
-
+  const modalContent = isOpen ? (
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+    >
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={handleCancel}
+      />
+      
       {/* Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-card border border-dark-border rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+      <div className="relative bg-[#1a1a1a] border border-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
               <Upload className="w-6 h-6 text-blue-500" />
               Atualizar Dados de Vendas
             </h2>
+            <button
+              onClick={handleCancel}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
             
             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
               <div className="flex gap-3">
@@ -163,35 +182,54 @@ export default function DataUpload() {
               </div>
             )}
 
-            {/* Botões */}
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={handleCancel}
-                disabled={status === 'processing'}
-                className="btn bg-dark-hover hover:bg-dark-border disabled:opacity-50"
-              >
-                {status === 'success' ? 'Fechar' : 'Cancelar'}
-              </button>
-              <button
-                onClick={handleUpload}
-                disabled={!file || status === 'processing' || status === 'success'}
-                className="btn bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {status === 'processing' ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    A processar...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4" />
-                    Atualizar Dados
-                  </>
-                )}
-              </button>
-            </div>
+          {/* Botões */}
+          <div className="flex gap-3 justify-end">
+            <button
+              onClick={handleCancel}
+              disabled={status === 'processing'}
+              className="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-50 transition-colors"
+            >
+              {status === 'success' ? 'Fechar' : 'Cancelar'}
+            </button>
+            <button
+              onClick={handleUpload}
+              disabled={!file || status === 'processing' || status === 'success'}
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
+            >
+              {status === 'processing' ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  A processar...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  Atualizar Dados
+                </>
+              )}
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  ) : null
+
+  return (
+    <>
+      {/* Botão para abrir modal */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="btn flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+        title="Atualizar dados do Supabase"
+      >
+        <Upload className="w-4 h-4" />
+        <span className="hidden sm:inline">Atualizar Dados</span>
+      </button>
+
+      {/* Modal usando Portal para renderizar fora da hierarquia */}
+      {typeof document !== 'undefined' && createPortal(
+        modalContent,
+        document.body
       )}
     </>
   )
